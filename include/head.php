@@ -1,11 +1,24 @@
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Favicon -->
-<link rel="shortcut icon" href="./img/svg/logo.svg" type="image/x-icon">
-<!-- Custom styles -->
-<link rel="stylesheet" href="./css/style.min.css">
+<meta name="title" content="Sistem Pendukung Keputusan Tempat Bimbel">
+<meta name="author" content="Dewi Putri Aulia">
+<meta name="description" content="Sistem Pendukung Keputusan Tempat Bimbel">
+<meta name="keywords" content="Sistem Pendukung Keputusan Tempat Bimbel">
 
-<link rel="icon" href="img/favicon.jpg">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css" integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q=" crossorigin="anonymous">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css">
+
+<!-- Datatable -->
+<link rel="stylesheet" href="assets/vendor/datatables/css/dataTables.bootstrap5.css">
+
+<!-- select2 -->
+<link rel="stylesheet" href="assets/vendor/select2/css/select2.min.css">
+<link rel="stylesheet" href="assets/vendor/select2/css/select2-bootstrap4.min.css">
+
+
+<link rel="icon" href="assets/img/properties/logo.jpg">
+<link rel="stylesheet" href="css/overlayscrollbars.min.css">
+<link rel="stylesheet" href="css/adminlte.css">
+
