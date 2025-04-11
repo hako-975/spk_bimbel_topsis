@@ -15,7 +15,7 @@
         exit;
     }
 
-    $orangtua = mysqli_query($conn, "SELECT * FROM orangtua ORDER BY nama_orangtua ASC");
+    $orangtua = mysqli_query($conn, "SELECT * FROM orangtua");
     $bimbel = mysqli_query($conn, "SELECT * FROM bimbel ORDER BY nama_bimbel ASC");
     $kriteria = mysqli_query($conn, "SELECT * FROM kriteria ORDER BY nama_kriteria ASC");
 

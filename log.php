@@ -6,7 +6,13 @@
         exit;
     }
 
-    $log = mysqli_query($conn, "SELECT * FROM log LEFT JOIN user ON log.id_user = user.id_user ORDER BY tgl_log DESC");
+    $id_user = $_SESSION['id_user'];
+
+    if ($dataUser['jabatan'] == 'orangtua') {
+        $log = mysqli_query($conn, "SELECT * FROM log LEFT JOIN user ON log.id_user = user.id_user WHERE user.id_user = '$id_user' ORDER BY tgl_log DESC");
+    } else {
+        $log = mysqli_query($conn, "SELECT * FROM log LEFT JOIN user ON log.id_user = user.id_user ORDER BY tgl_log DESC");
+    }
 ?>
 
 <!DOCTYPE html>

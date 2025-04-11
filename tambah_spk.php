@@ -6,6 +6,9 @@
         exit;
     }
 
+    $orangtua = mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user ORDER BY nama ASC");
+
+
     if ($dataUser['jabatan'] == 'orangtua') {
         $id_user = $dataUser['id_user'];
         $orangtua = mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE orangtua.id_user = '$id_user'");
@@ -16,7 +19,6 @@
         }
     }
     
-    $orangtua = mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user ORDER BY nama ASC");
     $bimbel = mysqli_query($conn, "SELECT * FROM bimbel ORDER BY nama_bimbel ASC");
     $kriteria = mysqli_query($conn, "SELECT * FROM kriteria ORDER BY nama_kriteria ASC");
 
@@ -148,15 +150,27 @@
                             <div class="card card-primary card-outline mb-4">
                                 <form method="post">
                                     <div class="card-body">
-                                        <div class="mb-3">
-                                            <label for="id_orangtua" class="form-label fw-bold">Nama Orang Tua</label>
-                                            <select name="id_orangtua" id="id_orangtua" class="form-select select2">
-                                                <option value="0">--- Pilih Orang Tua ---</option>
-                                                <?php foreach ($orangtua as $do): ?>
-                                                    <option value="<?= $do['id_orangtua']; ?>"><?= htmlspecialchars($do['nama']); ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
+                                        <?php if ($dataUser['jabatan'] == 'orangtua'): ?>
+                                            <div class="mb-3">
+                                                <label for="id_orangtua" class="form-label fw-bold">Nama Orang Tua</label>
+                                                <select name="id_orangtua" id="id_orangtua" class="form-select select2">
+                                                    <?php foreach ($orangtua as $do): ?>
+                                                        <option value="<?= $do['id_orangtua']; ?>"><?= htmlspecialchars($do['nama']); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="mb-3">
+                                                <label for="id_orangtua" class="form-label fw-bold">Nama Orang Tua</label>
+                                                <select name="id_orangtua" id="id_orangtua" class="form-select select2">
+                                                    <option value="0">--- Pilih Orang Tua ---</option>
+                                                    <?php foreach ($orangtua as $do): ?>
+                                                        <option value="<?= $do['id_orangtua']; ?>"><?= htmlspecialchars($do['nama']); ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        <?php endif ?>
+                                        
                                         <hr>
                                         <?php foreach ($bimbel as $de): ?>
                                             <input type="hidden" name="penilaian[<?= $de['id_bimbel']; ?>][id_bimbel]" value="<?= $de['id_bimbel']; ?>">
