@@ -8,14 +8,14 @@
 
     $id_orangtua = $_GET['id_orangtua'];
 
-    $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua WHERE id_orangtua = '$id_orangtua'"));
+    $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE id_orangtua = '$id_orangtua'"));
 ?>
 
 <!DOCTYPE html>
 <html lang="en"> <!--begin::Head-->
 
 <head>
-    <title>Detail Orang Tua - <?= $data_orangtua['nama_orangtua']; ?></title>
+    <title>Detail Orang Tua - <?= $data_orangtua['nama']; ?></title>
     <?php include_once 'include/head.php'; ?>
     <style>
         .profile-card {
@@ -58,7 +58,7 @@
                 <div class="container-fluid"> <!--begin::Row-->
                     <div class="row">
                         <div class="col-sm-8">
-                            <h3 class="mb-0"><i class="nav-icon fas fa-fw fa-user"></i> Detail Orang Tua - <?= $data_orangtua['nama_orangtua']; ?></h3>
+                            <h3 class="mb-0"><i class="nav-icon fas fa-fw fa-user"></i> Detail Orang Tua - <?= $data_orangtua['nama']; ?></h3>
                         </div>
                         <div class="col-sm-4">
                             <ol class="breadcrumb float-sm-end">
@@ -79,13 +79,13 @@
                                 <div class="text-center">
                                     <img src="assets/img/profiles/<?= $data_orangtua['foto']; ?>" alt="<?= $data_orangtua['foto']; ?>">
                                 </div>
-                                <h3 class="text-center"><?= $data_orangtua['nama_orangtua']; ?></h3>
+                                <h3 class="text-center"><?= $data_orangtua['nama']; ?></h3>
                                 <p><strong>No. Telepon: </strong><?= $data_orangtua['no_hp_orangtua']; ?></p>
                                 <p><strong>Alamat: </strong><?= $data_orangtua['alamat_orangtua']; ?></p>
                                 <p><strong>Dibuat Pada: </strong><?= date('d-m-Y, H:i:s', strtotime($data_orangtua['dibuat_pada']));; ?></p>
                                 <div class="btn-group" role="group">
                                     <a href="ubah_orangtua.php?id_orangtua=<?= $data_orangtua['id_orangtua']; ?>" class="btn btn-success"><i class="fas fa-fw fa-edit"></i> Ubah</a>
-                                    <a href="hapus_orangtua.php?id_orangtua=<?= $data_orangtua['id_orangtua']; ?>" data-nama="<?= $data_orangtua['nama_orangtua']; ?>" class="btn btn-danger btn-delete"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+                                    <a href="hapus_orangtua.php?id_orangtua=<?= $data_orangtua['id_orangtua']; ?>" data-nama="<?= $data_orangtua['nama']; ?>" class="btn btn-danger btn-delete"><i class="fas fa-fw fa-trash"></i> Hapus</a>
                                 </div>
                             </div>
                         </div>

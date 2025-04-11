@@ -6,7 +6,11 @@
         exit;
     }
 
-    $orangtua = mysqli_query($conn, "SELECT * FROM orangtua ORDER BY nama_orangtua ASC");
+    if ($dataUser['jabatan'] == 'orangtua') {
+        header("Location: index.php");
+        exit;
+    }
+    $orangtua = mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user ORDER BY nama ASC");
 ?>
 
 <!DOCTYPE html>
@@ -61,14 +65,14 @@
                                         <?php foreach ($orangtua as $ds): ?>
                                             <tr>
                                                 <td class="text-center align-middle"><?= $i++; ?>.</td>
-                                                <td class="align-middle text-start"><?= $ds['nama_orangtua']; ?></td>
+                                                <td class="align-middle text-start"><?= $ds['nama']; ?></td>
                                                 <td class="align-middle text-start"><?= $ds['no_hp_orangtua']; ?></td>
                                                 <td class="align-middle text-start"><?= $ds['alamat_orangtua']; ?></td>
                                                 <td class="align-middle"><?= date('d-m-Y, H:i:s', strtotime($ds['dibuat_pada'])); ?></td>
                                                 <td class="text-center align-middle">
                                                     <a href="detail_orangtua.php?id_orangtua=<?= $ds['id_orangtua']; ?>" class="m-1 btn btn-primary"><i class="fas fa-fw fa-bars"></i> Detail</a>
                                                     <a href="ubah_orangtua.php?id_orangtua=<?= $ds['id_orangtua']; ?>" class="m-1 btn btn-success"><i class="fas fa-fw fa-edit"></i> Ubah</a>
-                                                    <a href="hapus_orangtua.php?id_orangtua=<?= $ds['id_orangtua']; ?>" data-nama="<?= $ds['nama_orangtua']; ?>" class="m-1 btn btn-danger btn-delete"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+                                                    <a href="hapus_orangtua.php?id_orangtua=<?= $ds['id_orangtua']; ?>" data-nama="<?= $ds['nama']; ?>" class="m-1 btn btn-danger btn-delete"><i class="fas fa-fw fa-trash"></i> Hapus</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach ?>

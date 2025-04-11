@@ -6,7 +6,21 @@
         exit;
     }
 
-    $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis LEFT JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua LEFT JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel");
+    $id_user = $dataUser['id_user'];
+    
+    if ($dataUser['jabatan'] == 'orangtua') {
+        $orangtua = mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE orangtua.id_user = '$id_user'");
+
+        if (mysqli_num_rows($orangtua) == 0) {
+            header("Location: tambah_orangtua.php");
+            exit;
+        }
+
+        $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis LEFT JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua LEFT JOIN user ON orangtua.id_user = user.id_user LEFT JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel WHERE user.id_user = '$id_user' ORDER BY dibuat desc");
+    } else {
+        $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis LEFT JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua LEFT JOIN user ON orangtua.id_user = user.id_user LEFT JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel ORDER BY dibuat desc");
+
+    }
 ?>
 
 <!DOCTYPE html>
@@ -61,14 +75,14 @@
                                         <?php foreach ($hasil as $dh): ?>
                                             <tr>
                                                 <td class="text-center align-middle"><?= $i++; ?>.</td>
-                                                <td class="align-middle text-start"><?= $dh['nama_orangtua']; ?></td>
+                                                <td class="align-middle text-start"><?= $dh['nama']; ?></td>
                                                 <td class="align-middle text-start"><?= $dh['nama_bimbel']; ?></td>
                                                 <td class="align-middle text-start"><?= $dh['preferensi_tertinggi']; ?></td>
                                                 <td class="align-middle text-start"><?= date('d-m-Y, H:i', strtotime($dh['dibuat'])); ?></td>
                                                 <td class="text-center align-middle">
                                                     <a href="hasil_spk.php?id_hasil=<?= $dh['id_hasil']; ?>" class="m-1 btn btn-primary"><i class="fas fa-fw fa-bars"></i> Detail</a>
                                                     <a href="ubah_spk.php?id_hasil=<?= $dh['id_hasil']; ?>" class="m-1 btn btn-success"><i class="fas fa-fw fa-edit"></i> Ubah</a>
-                                                    <a href="hapus_spk.php?id_hasil=<?= $dh['id_hasil']; ?>" data-nama="<?= $dh['nama_orangtua']; ?>" class="m-1 btn btn-danger btn-delete"><i class="fas fa-fw fa-trash"></i> Hapus</a>
+                                                    <a href="hapus_spk.php?id_hasil=<?= $dh['id_hasil']; ?>" data-nama="<?= $dh['nama']; ?>" class="m-1 btn btn-danger btn-delete"><i class="fas fa-fw fa-trash"></i> Hapus</a>
                                                 </td>
                                             </tr>
                                         <?php endforeach ?>

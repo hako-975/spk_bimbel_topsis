@@ -8,8 +8,11 @@
 
     $id_orangtua = $_GET['id_orangtua'];
     
-    $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua WHERE id_orangtua = '$id_orangtua'"));
+    $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE id_orangtua = '$id_orangtua'"));
     
+    $user = mysqli_query($conn, "SELECT u.* FROM user u LEFT JOIN orangtua s ON u.id_user = s.id_user WHERE s.id_user IS NULL AND jabatan = 'orangtua' ORDER BY u.username ASC");
+    $nama = $dataUser['nama'];
+
     if ($data_orangtua == null) {
         header("Location: orangtua.php");
         exit;
@@ -20,89 +23,27 @@
 <html lang="en"> <!--begin::Head-->
 
 <head>
-    <title>Ubah Orang Tua - <?= $data_orangtua['nama_orangtua']; ?></title>
+    <title>Ubah Orangtua - <?= $data_orangtua['nama']; ?></title>
     <?php include_once 'include/head.php'; ?>
 </head> <!--end::Head--> <!--begin::Body-->
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
     <?php 
-        if (isset($_POST['btnUbahOrangTua'])) {
-            $nama_orangtua = htmlspecialchars($_POST['nama_orangtua']);
+        if (isset($_POST['btnUbahOrangtua'])) {
+            $id_user = htmlspecialchars($_POST['id_user']);
             $no_hp_orangtua = htmlspecialchars($_POST['no_hp_orangtua']);
             $alamat_orangtua = htmlspecialchars($_POST['alamat_orangtua']);
 
-            $foto = $data_orangtua['foto'];
-            $foto_new = $_FILES['foto']['name'];
-            if ($foto_new != '') {
-                $acc_extension = array('png', 'jpg', 'jpeg', 'gif');
-                $extension = explode('.', $foto_new);
-                $extension_lower = strtolower(end($extension));
-                $size = $_FILES['foto']['size'];
-                $file_tmp = $_FILES['foto']['tmp_name'];     
-
-                if ($size > 5253120) {
-                    echo "
-                        <script>
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: 'Ukuran file terlalu besar!',
-                                confirmButtonText: 'Kembali'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.history.back();
-                                }
-                            });
-                        </script>
-                    ";
-                    exit;
-                }
-
-                if(!in_array($extension_lower, $acc_extension))
-                {
-                    echo "
-                        <script>
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: 'File yang di upload bukan gambar!',
-                                confirmButtonText: 'Kembali'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.history.back();
-                                }
-                            });
-                        </script>
-                    ";
-                    exit;
-                }
-
-                $image_path = 'assets/img/profiles/' . $foto;
-                
-                if ($foto != 'default.jpg' && $foto != '') {
-                    if (file_exists($image_path)) {
-                        unlink($image_path);
-                    }
-                }
-
-                $foto = uniqid() . '_' . time() . '_' . $foto_new;
-            }
-            
-            $update_orangtua = mysqli_query($conn, "UPDATE orangtua SET nama_orangtua = '$nama_orangtua', no_hp_orangtua = '$no_hp_orangtua', alamat_orangtua = '$alamat_orangtua', foto = '$foto' WHERE id_orangtua = '$id_orangtua'");
+            $update_orangtua = mysqli_query($conn, "UPDATE orangtua SET no_hp_orangtua = '$no_hp_orangtua', alamat_orangtua = '$alamat_orangtua', id_user = '$id_user' WHERE id_orangtua = '$id_orangtua'");
 
             if ($update_orangtua) {
-                $log_berhasil = mysqli_query($conn, "INSERT INTO log VALUES ('', 'Orang Tua $nama_orangtua berhasil diubah!', CURRENT_TIMESTAMP(), " . $dataUser['id_user'] . ")");
-
-                if ($foto_new != '') {
-                    $file_tmp = $_FILES['foto']['tmp_name'];     
-                    move_uploaded_file($file_tmp, 'assets/img/profiles/' . $foto);
-                }
+                $log_berhasil = mysqli_query($conn, "INSERT INTO log VALUES ('', 'Orangtua $nama berhasil diubah!', CURRENT_TIMESTAMP(), " . $dataUser['id_user'] . ")");
 
                 echo "
                     <script>
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
-                            text: 'Orang Tua " . $nama_orangtua . " berhasil diubah!'
+                            text: 'Orangtua " . $nama . " berhasil diubah!'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 window.location.href = 'orangtua.php';
@@ -112,14 +53,14 @@
                 ";
                 exit;
             } else {
-                $log_gagal = mysqli_query($conn, "INSERT INTO log VALUES ('', 'Orang Tua $nama_orangtua gagal diubah!', CURRENT_TIMESTAMP(), " . $dataUser['id_user'] . ")");
+                $log_gagal = mysqli_query($conn, "INSERT INTO log VALUES ('', 'Orangtua $nama gagal diubah!', CURRENT_TIMESTAMP(), " . $dataUser['id_user'] . ")");
 
                 echo "
                     <script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: 'Orang Tua " . $nama_orangtua . " gagal diubah!'
+                            text: 'Orangtua " . $nama . " gagal diubah!'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 window.history.back();
@@ -140,13 +81,13 @@
                 <div class="container-fluid"> <!--begin::Row-->
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">Ubah Orang Tua - <?= $data_orangtua['nama_orangtua']; ?></h3>
+                            <h3 class="mb-0">Ubah Orangtua - <?= $data_orangtua['nama']; ?></h3>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
-                                <li class="breadcrumb-item"><a href="orangtua.php">Orang Tua</a></li>
+                                <li class="breadcrumb-item"><a href="orangtua.php">Orangtua</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">
-                                    Ubah Orang Tua
+                                    Ubah Orangtua
                                 </li>
                             </ol>
                         </div>
@@ -156,49 +97,32 @@
             <div class="app-content"> <!--begin::Container-->
                 <div class="container-fluid"> <!-- Info boxes -->
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-lg-6">
                             <div class="card card-primary card-outline mb-4">
                                 <form method="post" enctype="multipart/form-data"> 
                                     <div class="card-body">
                                         <div class="mb-3"> 
-                                            <label for="nama_orangtua" class="form-label">Nama Orang Tua</label>
-                                            <input type="text" class="form-control" id="nama_orangtua" name="nama_orangtua" value="<?= $data_orangtua['nama_orangtua']; ?>" required>
+                                            <label for="id_user" class="form-label">Akun User Orangtua</label>
+                                            <select class="form-select" id="id_user" name="id_user" required>
+                                                <option value="<?= $data_orangtua['id_user']; ?>"><?= $data_orangtua['username']; ?></option>
+                                                <?php foreach ($user as $du): ?>
+                                                    <option value="<?= $du['id_user']; ?>"><?= $du['username']; ?></option>
+                                                <?php endforeach ?>
+                                            </select>
                                         </div>
                                         <div class="mb-3"> 
-                                            <label for="no_hp_orangtua" class="form-label">No. Telepon</label> 
+                                            <label for="no_hp_orangtua" class="form-label">No. Telepon Orangtua</label> 
                                             <input type="number" class="form-control" id="no_hp_orangtua" name="no_hp_orangtua" value="<?= $data_orangtua['no_hp_orangtua']; ?>" required>
                                         </div>
                                         <div class="mb-3"> 
-                                            <label for="alamat_orangtua" class="form-label">Alamat Orang Tua</label>
+                                            <label for="alamat_orangtua" class="form-label">Alamat Orangtua</label>
                                             <textarea class="form-control" id="alamat_orangtua" name="alamat_orangtua" required><?= $data_orangtua['alamat_orangtua']; ?></textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="foto" class="form-label">Foto</label>
-                                            <div class="input-group">
-                                                <input type="file" class="form-control" id="foto" name="foto" onchange="previewImage(event)"> 
-                                                <label class="input-group-text" for="foto">Upload</label> 
-                                            </div>
                                         </div>
                                     </div> 
                                     <div class="card-footer pt-3 text-end">
-                                        <button type="submit" name="btnUbahOrangTua" class="btn btn-primary"><i class="fas fa-fw fa-save"></i> Submit</button>
+                                        <button type="submit" name="btnUbahOrangtua" class="btn btn-primary"><i class="fas fa-fw fa-save"></i> Submit</button>
                                     </div> 
                                 </form> <!--end::Form-->
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="card card-primary card-outline mb-4">
-                                <div class="card-body text-center">
-                                    <h5 class="form-label">Preview Foto</h5>
-                                    <div class="row justify-content-between">
-                                        <div class="col">
-                                            <img id="preview-img" class="img-fluid rounded-3" src="assets/img/profiles/<?= $data_orangtua['foto']; ?>" alt="<?= $data_orangtua['foto']; ?>">
-                                        </div>
-                                        <div class="col">
-                                            <img id="preview-img-circle" class="img-fluid rounded-circle" src="assets/img/profiles/<?= $data_orangtua['foto']; ?>" alt="<?= $data_orangtua['foto']; ?>">
-                                        </div>
-                                    </div>  
-                                </div>
                             </div>
                         </div>
                     </div>

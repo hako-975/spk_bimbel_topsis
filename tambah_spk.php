@@ -6,13 +6,23 @@
         exit;
     }
 
-    $orangtua = mysqli_query($conn, "SELECT * FROM orangtua ORDER BY nama_orangtua ASC");
+    if ($dataUser['jabatan'] == 'orangtua') {
+        $id_user = $dataUser['id_user'];
+        $orangtua = mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE orangtua.id_user = '$id_user'");
+
+        if (mysqli_num_rows($orangtua) == 0) {
+            header("Location: tambah_orangtua.php");
+            exit;
+        }
+    }
+    
+    $orangtua = mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user ORDER BY nama ASC");
     $bimbel = mysqli_query($conn, "SELECT * FROM bimbel ORDER BY nama_bimbel ASC");
     $kriteria = mysqli_query($conn, "SELECT * FROM kriteria ORDER BY nama_kriteria ASC");
 
     if (isset($_GET['id_orangtua'])) {
         $id_orangtua = $_GET['id_orangtua'];
-        $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua WHERE id_orangtua = '$id_orangtua'"));
+        $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE id_orangtua = '$id_orangtua'"));
     }
 ?>
 
@@ -72,7 +82,7 @@
                 }
             }
 
-            $nama_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua WHERE id_orangtua = '$id_orangtua'"))['nama_orangtua'];
+            $nama_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE id_orangtua = '$id_orangtua'"))['nama'];
 
             if (!$error) {
                 $log_berhasil = mysqli_query($conn, "INSERT INTO log VALUES ('', 'SPK Tempat Bimbel $nama_orangtua Berhasil ditambahkan!', CURRENT_TIMESTAMP(), " . $dataUser['id_user'] . ")");
@@ -142,8 +152,8 @@
                                             <label for="id_orangtua" class="form-label fw-bold">Nama Orang Tua</label>
                                             <select name="id_orangtua" id="id_orangtua" class="form-select select2">
                                                 <option value="0">--- Pilih Orang Tua ---</option>
-                                                <?php foreach ($orangtua as $ds): ?>
-                                                    <option value="<?= $ds['id_orangtua']; ?>"><?= htmlspecialchars($ds['nama_orangtua']); ?></option>
+                                                <?php foreach ($orangtua as $do): ?>
+                                                    <option value="<?= $do['id_orangtua']; ?>"><?= htmlspecialchars($do['nama']); ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>

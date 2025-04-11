@@ -6,12 +6,23 @@
         exit;
     }
 
-    $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel ORDER BY dibuat desc");
+    $id_user = $dataUser['id_user'];
+    
+    if ($dataUser['jabatan'] == 'orangtua') {
+        $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis LEFT JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua LEFT JOIN user ON orangtua.id_user = user.id_user LEFT JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel WHERE user.id_user = '$id_user' ORDER BY dibuat desc");
+    } else {
+        $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis LEFT JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua LEFT JOIN user ON orangtua.id_user = user.id_user LEFT JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel ORDER BY dibuat desc");
+    }
     
     if (isset($_GET['btnPrint'])) {
         $dari_tanggal = $_GET['dari_tanggal'] . ' 00:00:00';
         $sampai_tanggal = $_GET['sampai_tanggal'] . ' 23:59:59';
-        $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel WHERE hasil_topsis.dibuat_pada BETWEEN '$dari_tanggal' AND '$sampai_tanggal' ORDER BY hasil_topsis.dibuat_pada desc");
+
+        if ($dataUser['jabatan'] == 'orangtua') {
+            $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis LEFT JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua LEFT JOIN user ON orangtua.id_user = user.id_user LEFT JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel WHERE hasil_topsis.dibuat_pada BETWEEN '$dari_tanggal' AND '$sampai_tanggal' AND user.id_user = '$id_user' ORDER BY dibuat desc");
+        } else {
+            $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis LEFT JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua LEFT JOIN user ON orangtua.id_user = user.id_user LEFT JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel WHERE hasil_topsis.dibuat_pada BETWEEN '$dari_tanggal' AND '$sampai_tanggal' ORDER BY dibuat desc");
+        }
     }
 ?>
 
@@ -89,7 +100,7 @@
                                         <?php foreach ($hasil as $dh): ?>
                                             <tr>
                                                 <td class="text-center align-middle"><?= $i++; ?>.</td>
-                                                <td class="align-middle text-start"><?= $dh['nama_orangtua']; ?></td>
+                                                <td class="align-middle text-start"><?= $dh['nama']; ?></td>
                                                 <td class="align-middle text-start"><?= $dh['nama_bimbel']; ?></td>
                                                 <td class="align-middle text-start"><?= $dh['preferensi_tertinggi']; ?></td>
                                                 <td class="align-middle text-start"><?= date('d-m-Y, H:i \W\I\B', strtotime($dh['dibuat'])); ?></td>

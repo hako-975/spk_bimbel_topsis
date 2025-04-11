@@ -6,7 +6,7 @@
         exit;
     }
 
-    if ($dataUser['jabatan'] == 'orang_tua') {
+    if ($dataUser['jabatan'] == 'orangtua') {
         header("Location: index.php");
         exit;
     }
@@ -223,7 +223,7 @@
                                             <select class="form-select" id="jabatan" name="jabatan">
                                                 <option value="0">--- Pilih Jabatan ---</option>
                                                 <option value="admin"><?= ucwords('admin'); ?></option>
-                                                <option value="orang_tua"><?= ucwords('orang_tua'); ?></option>
+                                                <option value="orangtua"><?= ucwords('orangtua'); ?></option>
                                             </select>
                                         </div>
                                         <div class="mb-3"> 

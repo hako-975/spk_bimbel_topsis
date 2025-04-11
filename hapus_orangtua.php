@@ -11,8 +11,8 @@
 	
 	$id_orangtua = $_GET['id_orangtua'];
 
-    $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua WHERE id_orangtua = '$id_orangtua'"));
-    $nama_orangtua = $data_orangtua['nama_orangtua'];
+    $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE id_orangtua = '$id_orangtua'"));
+    $nama_orangtua = $data_orangtua['nama'];
 
     $foto = $data_orangtua['foto'];
     $image_path = 'assets/img/profiles/' . $foto;

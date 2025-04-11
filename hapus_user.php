@@ -9,7 +9,7 @@
 	    exit;
 	}
 	
-	if ($dataUser['jabatan'] == 'orang_tua') {
+	if ($dataUser['jabatan'] == 'orangtua') {
         header("Location: index.php");
         exit;
     }

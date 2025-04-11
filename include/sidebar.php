@@ -35,16 +35,18 @@
                         <p>Bimbel</p>
                     </a> 
                 </li>
-                <li class="nav-item"> 
-                    <a href="orangtua.php" class="nav-link text-dark <?= ($_SERVER['REQUEST_URI'] == '/spk_bimbel_topsis/orangtua.php') ? 'active' : ''; ?>"> <i class="nav-icon fas fa-fw fa-users"></i>
-                        <p>Orang Tua</p>
-                    </a> 
-                </li>
-                <li class="nav-item"> 
-                    <a href="user.php" class="nav-link text-dark <?= ($_SERVER['REQUEST_URI'] == '/spk_bimbel_topsis/user.php') ? 'active' : ''; ?>"> <i class="nav-icon fas fa-fw fa-user"></i>
-                        <p>User</p>
-                    </a> 
-                </li>
+                <?php if ($dataUser['jabatan'] == 'admin'): ?>
+                    <li class="nav-item"> 
+                        <a href="orangtua.php" class="nav-link text-dark <?= ($_SERVER['REQUEST_URI'] == '/spk_bimbel_topsis/orangtua.php') ? 'active' : ''; ?>"> <i class="nav-icon fas fa-fw fa-users"></i>
+                            <p>Orang Tua</p>
+                        </a> 
+                    </li>
+                    <li class="nav-item"> 
+                        <a href="user.php" class="nav-link text-dark <?= ($_SERVER['REQUEST_URI'] == '/spk_bimbel_topsis/user.php') ? 'active' : ''; ?>"> <i class="nav-icon fas fa-fw fa-user"></i>
+                            <p>User</p>
+                        </a> 
+                    </li>
+                <?php endif ?>
                 <li class="nav-item"> 
                     <a href="laporan.php" class="nav-link text-dark <?= ($_SERVER['REQUEST_URI'] == '/spk_bimbel_topsis/laporan.php') ? 'active' : ''; ?>"> <i class="nav-icon fas fa-fw fa-file-alt"></i>
                         <p>Laporan</p>

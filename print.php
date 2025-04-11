@@ -6,13 +6,13 @@ if (!isset($_SESSION['id_user'])) {
     exit;
 }
 
-$hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel ORDER BY dibuat desc");
+$hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN user ON orangtua.id_user = user.id_user INNER JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel ORDER BY dibuat desc");
 
 if (isset($_GET)) {
     if (isset($_GET['dari_tanggal'])) {
         $dari_tanggal = $_GET['dari_tanggal'];
         $sampai_tanggal = $_GET['sampai_tanggal'];
-        $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel WHERE hasil_topsis.dibuat_pada BETWEEN '$dari_tanggal' AND '$sampai_tanggal' ORDER BY hasil_topsis.dibuat_pada desc");
+        $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN user ON orangtua.id_user = user.id_user INNER JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel WHERE hasil_topsis.dibuat_pada BETWEEN '$dari_tanggal' AND '$sampai_tanggal' ORDER BY hasil_topsis.dibuat_pada desc");
     }
 }
 
@@ -56,7 +56,7 @@ if (isset($_GET)) {
     if (isset($_GET['file_excel'])) {
         if ($_GET['file_excel'] == true) {
             header("Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            header("Content-Disposition: attachment; filename=hasil_ujian_export.xls"); 
+            header("Content-Disposition: attachment; filename=hasil_spk_topsis_bimbel.xls"); 
         }
     }
 ?>
@@ -80,7 +80,7 @@ if (isset($_GET)) {
                 <?php foreach ($hasil as $dh): ?>
                     <tr>
                         <td class="text-center align-middle"><?= $i++; ?>.</td>
-                        <td class="align-middle text-start"><?= $dh['nama_orangtua']; ?></td>
+                        <td class="align-middle text-start"><?= $dh['nama']; ?></td>
                         <td class="align-middle text-start"><?= $dh['nama_bimbel']; ?></td>
                         <td class="align-middle text-start"><?= $dh['preferensi_tertinggi']; ?></td>
                         <td class="align-middle text-start"><?= date('d-m-Y, H:i \W\I\B', strtotime($dh['dibuat'])); ?></td>

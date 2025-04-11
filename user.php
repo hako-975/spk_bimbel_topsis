@@ -6,6 +6,11 @@
         exit;
     }
 
+    if ($dataUser['jabatan'] == 'orangtua') {
+        header("Location: index.php");
+        exit;
+    }
+
     $user = mysqli_query($conn, "SELECT * FROM user ORDER BY username ASC");
 ?>
 

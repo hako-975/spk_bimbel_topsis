@@ -8,7 +8,7 @@
 
     $id_hasil = $_GET['id_hasil'];
 
-    $data_hasil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua WHERE hasil_topsis.id_hasil = '$id_hasil'"));
+    $data_hasil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE hasil_topsis.id_hasil = '$id_hasil'"));
 
     if ($data_hasil == null) {
         header("Location: spk.php");
@@ -21,7 +21,7 @@
 
     if (isset($_GET['id_orangtua'])) {
         $id_orangtua = $_GET['id_orangtua'];
-        $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua WHERE id_orangtua = '$id_orangtua'"));
+        $data_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE id_orangtua = '$id_orangtua'"));
     }
 ?>
 
@@ -81,7 +81,7 @@
                 }
             }
 
-            $nama_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua WHERE id_orangtua = '$id_orangtua'"))['nama_orangtua'];
+            $nama_orangtua = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE id_orangtua = '$id_orangtua'"))['nama'];
 
             if (!$error) {
                 $log_berhasil = mysqli_query($conn, "INSERT INTO log VALUES ('', 'SPK Tempat Bimbel $nama_orangtua Berhasil diubah!', CURRENT_TIMESTAMP(), " . $dataUser['id_user'] . ")");
@@ -150,10 +150,10 @@
                                         <div class="mb-3">
                                             <label for="id_orangtua" class="form-label fw-bold">Nama Orang Tua</label>
                                             <select name="id_orangtua" id="id_orangtua" class="form-select select2">
-                                                <option value="<?= $data_hasil['id_orangtua']; ?>"><?= $data_hasil['nama_orangtua']; ?></option>
+                                                <option value="<?= $data_hasil['id_orangtua']; ?>"><?= $data_hasil['nama']; ?></option>
                                                 <?php foreach ($orangtua as $ds): ?>
                                                     <?php if ($data_hasil['id_orangtua'] != $ds['id_orangtua']): ?>
-                                                        <option value="<?= $ds['id_orangtua']; ?>"><?= htmlspecialchars($ds['nama_orangtua']); ?></option>
+                                                        <option value="<?= $ds['id_orangtua']; ?>"><?= htmlspecialchars($ds['nama']); ?></option>
                                                     <?php endif ?>
                                                 <?php endforeach; ?>
                                             </select>

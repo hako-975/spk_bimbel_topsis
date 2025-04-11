@@ -94,6 +94,9 @@
                         <div class="input-group-text"> <span class="fas fa-fw fa-lock"></span> </div>
                     </div> <!--begin::Row-->
                     <div class="row mt-3">
+                        <div class="col text-start my-auto">
+                            <a href="registrasi.php">Registrasi</a>
+                        </div>
                         <div class="col text-end">
                             <button type="submit" name="btnLogin" class="btn btn-primary">Login <span class="fas fa-fw fa-sign-in-alt"></span></button>
                         </div> <!-- /.col -->

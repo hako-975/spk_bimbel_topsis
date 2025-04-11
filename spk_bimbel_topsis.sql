@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 09 Apr 2025 pada 11.08
+-- Waktu pembuatan: 11 Apr 2025 pada 12.18
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 7.4.33
 
@@ -61,7 +61,7 @@ CREATE TABLE `hasil_topsis` (
 --
 
 INSERT INTO `hasil_topsis` (`id_hasil`, `id_orangtua`, `id_bimbel`, `preferensi_tertinggi`, `dibuat_pada`) VALUES
-(2, 2, 1, 0.674685, '2025-04-09 16:07:25');
+(8, 1, 1, 0.673956, '2025-04-11 17:17:37');
 
 -- --------------------------------------------------------
 
@@ -146,7 +146,51 @@ INSERT INTO `log` (`id_log`, `isi_log`, `tgl_log`, `id_user`) VALUES
 (38, 'SPK Tempat Bimbel Contoh Orang Tua 1 Berhasil diubah!', '2025-04-09 16:06:19', 1),
 (39, 'SPK Tempat Bimbel Contoh Orang Tua 1 Berhasil diubah!', '2025-04-09 16:06:36', 1),
 (40, 'Hasil Bimbel Contoh Orang Tua 1 berhasil dihapus!', '2025-04-09 16:06:55', 1),
-(41, 'SPK Tempat Bimbel Contoh Orang Tua 1 Berhasil ditambahkan!', '2025-04-09 16:07:26', 1);
+(41, 'SPK Tempat Bimbel Contoh Orang Tua 1 Berhasil ditambahkan!', '2025-04-09 16:07:26', 1),
+(42, 'User andri berhasil ditambahkan!', '2025-04-11 16:52:11', 3),
+(43, 'User andri berhasil login!', '2025-04-11 16:52:15', 3),
+(44, 'User andri berhasil logout!', '2025-04-11 16:57:52', 3),
+(45, 'User andri berhasil login!', '2025-04-11 16:57:55', 3),
+(46, 'Orangtua andri berhasil ditambahkan!', '2025-04-11 17:03:45', 3),
+(47, 'SPK Tempat Bimbel  Berhasil ditambahkan!', '2025-04-11 17:05:58', 3),
+(48, 'SPK Tempat Bimbel  Berhasil ditambahkan!', '2025-04-11 17:06:46', 3),
+(49, 'SPK Tempat Bimbel andri Berhasil ditambahkan!', '2025-04-11 17:07:09', 3),
+(50, 'User andri berhasil logout!', '2025-04-11 17:09:19', 3),
+(51, 'User andri berhasil login!', '2025-04-11 17:09:24', 3),
+(52, 'User andri berhasil ditambahkan!', '2025-04-11 17:10:08', 2),
+(53, 'User andri berhasil login!', '2025-04-11 17:10:19', 2),
+(54, 'Orangtua Andri Firman Saputra berhasil ditambahkan!', '2025-04-11 17:11:57', 2),
+(55, 'User andri berhasil logout!', '2025-04-11 17:12:52', 2),
+(56, 'User dewi berhasil login!', '2025-04-11 17:12:55', 1),
+(57, 'Hasil Bimbel  berhasil dihapus!', '2025-04-11 17:13:00', 1),
+(58, 'Hasil Bimbel  berhasil dihapus!', '2025-04-11 17:13:02', 1),
+(59, 'Hasil Bimbel  berhasil dihapus!', '2025-04-11 17:13:04', 1),
+(60, 'Hasil Bimbel  berhasil dihapus!', '2025-04-11 17:13:05', 1),
+(61, 'Hasil Bimbel  berhasil dihapus!', '2025-04-11 17:13:06', 1),
+(62, 'SPK Tempat Bimbel Andri Firman Saputra Berhasil ditambahkan!', '2025-04-11 17:13:16', 1),
+(63, 'Hasil Bimbel  berhasil dihapus!', '2025-04-11 17:13:31', 1),
+(64, 'Hasil Bimbel  berhasil dihapus!', '2025-04-11 17:14:21', 1),
+(65, 'SPK Tempat Bimbel Andri Firman Saputra Berhasil ditambahkan!', '2025-04-11 17:14:30', 1),
+(66, 'Hasil Bimbel Andri Firman Saputra berhasil dihapus!', '2025-04-11 17:14:37', 1),
+(67, 'User andre berhasil ditambahkan!', '2025-04-11 17:15:07', 1),
+(68, 'User andre berhasil diubah!', '2025-04-11 17:15:12', 1),
+(69, 'User andre berhasil dihapus!', '2025-04-11 17:15:14', 1),
+(70, 'User asd berhasil ditambahkan!', '2025-04-11 17:15:24', 1),
+(71, 'Orangtua Dewi Putri Aulia berhasil ditambahkan!', '2025-04-11 17:15:32', 1),
+(72, 'Orangtua Dewi Putri Aulia berhasil diubah!', '2025-04-11 17:15:36', 1),
+(73, 'Orang Tua asd berhasil dihapus!', '2025-04-11 17:15:39', 1),
+(74, 'User asd berhasil dihapus!', '2025-04-11 17:15:44', 1),
+(75, 'SPK Tempat Bimbel Andri Firman Saputra Berhasil ditambahkan!', '2025-04-11 17:15:54', 1),
+(76, 'User dewi berhasil logout!', '2025-04-11 17:16:03', 1),
+(77, 'User andri berhasil login!', '2025-04-11 17:16:06', 2),
+(78, 'User dewi berhasil login!', '2025-04-11 17:17:19', 1),
+(79, 'User asd berhasil ditambahkan!', '2025-04-11 17:17:28', 1),
+(80, 'Orangtua Dewi Putri Aulia berhasil ditambahkan!', '2025-04-11 17:17:32', 1),
+(81, 'Orangtua Dewi Putri Aulia berhasil ditambahkan!', '2025-04-11 17:17:32', 1),
+(82, 'SPK Tempat Bimbel Andri Firman Saputra Berhasil diubah!', '2025-04-11 17:17:37', 2),
+(83, 'User andri berhasil logout!', '2025-04-11 17:17:47', 2),
+(84, 'User dewi berhasil login!', '2025-04-11 17:17:53', 1),
+(85, 'User asd berhasil dihapus!', '2025-04-11 17:17:56', 1);
 
 -- --------------------------------------------------------
 
@@ -156,10 +200,9 @@ INSERT INTO `log` (`id_log`, `isi_log`, `tgl_log`, `id_user`) VALUES
 
 CREATE TABLE `orangtua` (
   `id_orangtua` int(11) NOT NULL,
-  `nama_orangtua` varchar(100) NOT NULL,
   `no_hp_orangtua` varchar(20) NOT NULL,
   `alamat_orangtua` text NOT NULL,
-  `foto` text NOT NULL,
+  `id_user` int(11) NOT NULL,
   `dibuat_pada` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -167,8 +210,10 @@ CREATE TABLE `orangtua` (
 -- Dumping data untuk tabel `orangtua`
 --
 
-INSERT INTO `orangtua` (`id_orangtua`, `nama_orangtua`, `no_hp_orangtua`, `alamat_orangtua`, `foto`, `dibuat_pada`) VALUES
-(2, 'Contoh Orang Tua 1', '0812345678', 'Jl. Orang Tua No. 01', 'default.jpg', '2025-04-09 15:55:40');
+INSERT INTO `orangtua` (`id_orangtua`, `no_hp_orangtua`, `alamat_orangtua`, `id_user`, `dibuat_pada`) VALUES
+(1, '087808675313', 'Jl. AMD Babakan Pocis 88', 2, '2025-04-11 17:11:57'),
+(3, '123', 'asd', 5, '2025-04-11 17:17:32'),
+(4, '123', 'asd', 5, '2025-04-11 17:17:32');
 
 -- --------------------------------------------------------
 
@@ -189,16 +234,16 @@ CREATE TABLE `penilaian` (
 --
 
 INSERT INTO `penilaian` (`id_penilaian`, `id_kriteria`, `id_bimbel`, `nilai`, `id_hasil`) VALUES
-(31, 2, 1, 20, 2),
-(32, 1, 1, 60, 2),
-(33, 4, 1, 30, 2),
-(34, 3, 1, 60, 2),
-(35, 5, 1, 40, 2),
-(36, 2, 2, 60, 2),
-(37, 1, 2, 80, 2),
-(38, 4, 2, 60, 2),
-(39, 3, 2, 65, 2),
-(40, 5, 2, 45, 2);
+(101, 2, 1, 123213, 8),
+(102, 1, 1, 213213, 8),
+(103, 4, 1, 213213, 8),
+(104, 3, 1, 12312, 8),
+(105, 5, 1, 321312, 8),
+(106, 2, 2, 3213, 8),
+(107, 1, 2, 313, 8),
+(108, 4, 2, 1231, 8),
+(109, 3, 2, 2313, 8),
+(110, 5, 2, 222, 8);
 
 -- --------------------------------------------------------
 
@@ -210,7 +255,7 @@ CREATE TABLE `user` (
   `id_user` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `jabatan` enum('admin','orang_tua') NOT NULL,
+  `jabatan` enum('admin','orangtua') NOT NULL,
   `nama` varchar(100) NOT NULL,
   `foto` text NOT NULL,
   `dibuat_pada` timestamp NOT NULL DEFAULT current_timestamp()
@@ -221,7 +266,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `jabatan`, `nama`, `foto`, `dibuat_pada`) VALUES
-(1, 'dewi', '$2y$10$Gw0mG1lz..2tmUDVc0tZ6ueU.jomzE8FX22C1.PDVdohQcePD4J4y', 'admin', 'Dewi Putri Aulia', 'default.jpg', '2025-03-17 15:22:49');
+(1, 'dewi', '$2y$10$Gw0mG1lz..2tmUDVc0tZ6ueU.jomzE8FX22C1.PDVdohQcePD4J4y', 'admin', 'Dewi Putri Aulia', 'default.jpg', '2025-03-17 15:22:49'),
+(2, 'andri', '$2y$10$Ry0q2KT9fzYU2PkfBOVk/OZOJzVWWylns4jj7JMsZ8/eJpLWkuRem', 'orangtua', 'Andri Firman Saputra', 'default.jpg', '2025-04-11 10:10:08');
 
 --
 -- Indexes for dumped tables
@@ -258,7 +304,8 @@ ALTER TABLE `log`
 -- Indeks untuk tabel `orangtua`
 --
 ALTER TABLE `orangtua`
-  ADD PRIMARY KEY (`id_orangtua`);
+  ADD PRIMARY KEY (`id_orangtua`),
+  ADD KEY `id_user` (`id_user`);
 
 --
 -- Indeks untuk tabel `penilaian`
@@ -289,7 +336,7 @@ ALTER TABLE `bimbel`
 -- AUTO_INCREMENT untuk tabel `hasil_topsis`
 --
 ALTER TABLE `hasil_topsis`
-  MODIFY `id_hasil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_hasil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `kriteria`
@@ -301,25 +348,25 @@ ALTER TABLE `kriteria`
 -- AUTO_INCREMENT untuk tabel `log`
 --
 ALTER TABLE `log`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT untuk tabel `orangtua`
 --
 ALTER TABLE `orangtua`
-  MODIFY `id_orangtua` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_orangtua` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `penilaian`
 --
 ALTER TABLE `penilaian`
-  MODIFY `id_penilaian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id_penilaian` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

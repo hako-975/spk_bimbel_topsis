@@ -8,7 +8,7 @@
 
     $id_hasil = $_GET['id_hasil'];
 
-    $data_hasil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua WHERE hasil_topsis.id_hasil = '$id_hasil'"));
+    $data_hasil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE hasil_topsis.id_hasil = '$id_hasil'"));
 
     if ($data_hasil == null) {
         header("Location: spk.php");
@@ -92,7 +92,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Hasil SPK Tempat Bimbel - <?= $data_hasil['nama_orangtua']; ?></title>
+    <title>Hasil SPK Tempat Bimbel - <?= $data_hasil['nama']; ?></title>
     <?php include_once 'include/head.php'; ?>
     <!-- KaTeX CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css">
@@ -107,7 +107,7 @@
                 <div class="container-fluid"> <!--begin::Row-->
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">Hasil SPK Tempat Bimbel - <?= $data_hasil['nama_orangtua']; ?></h3>
+                            <h3 class="mb-0">Hasil SPK Tempat Bimbel - <?= $data_hasil['nama']; ?></h3>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">

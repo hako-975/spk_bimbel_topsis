@@ -11,8 +11,8 @@
 	
 	$id_hasil = $_GET['id_hasil'];
 
-    $data_hasil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua WHERE hasil_topsis.id_hasil = '$id_hasil'"));
-    $nama_orangtua = $data_hasil['nama_orangtua'];
+    $data_hasil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE hasil_topsis.id_hasil = '$id_hasil'"));
+    $nama_orangtua = $data_hasil['nama'];
 
 	$delete_hasil = mysqli_query($conn, "DELETE FROM hasil_topsis WHERE id_hasil = '$id_hasil'");
 

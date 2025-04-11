@@ -6,11 +6,24 @@
         exit;
     }
 
+    if ($dataUser['jabatan'] == 'orangtua') {
+        $id_user = $dataUser['id_user'];
+        $orangtua = mysqli_query($conn, "SELECT * FROM orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE orangtua.id_user = '$id_user'");
+
+        if (mysqli_num_rows($orangtua) == 0) {
+            header("Location: tambah_orangtua.php");
+            exit;
+        }
+
+        $id_orangtua = mysqli_fetch_assoc($orangtua)['id_orangtua'];
+        $jml_spk = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM hasil_topsis WHERE id_orangtua = '$id_orangtua'"));
+    } else {
+        $jml_spk = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM hasil_topsis"));
+    }
     $jml_bimbel = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM bimbel"));
     $jml_kriteria = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM kriteria"));
     $jml_orangtua = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM orangtua"));
     $jml_user = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM user"));
-    $jml_spk = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM hasil_topsis"));
 ?>
 
 <!DOCTYPE html>
