@@ -19,7 +19,7 @@
 <html lang="en"> <!--begin::Head-->
 
 <head>
-    <title>Sistem Pendukung Keputusan Tempat Bimbel</title>
+    <title>Entrance Ticket: Celebrating 30 Years of Telkomsel</title>
     <?php include_once 'include/head.php'; ?>
 </head> <!--end::Head--> <!--begin::Body-->
 

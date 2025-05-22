@@ -2,7 +2,7 @@
     require_once 'connection.php';
 
     if (!isset($_SESSION['id_pengguna_tiket'])) {
-        header("Location: index.php");
+        header("Location: registrasi.php");
         exit;
     }
 
@@ -15,7 +15,7 @@
 <html lang="en"> <!--begin::Head-->
 
 <head>
-    <title>Entrance Ticket</title>
+    <title>Entrance Ticket: Celebrating 30 Years of Telkomsel</title>
     <?php include_once 'include/head.php'; ?>
 </head> <!--end::Head--> <!--begin::Body-->
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary"> <!--begin::App Wrapper-->
