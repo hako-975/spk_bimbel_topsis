@@ -7699,6 +7699,10 @@ textarea.form-control-lg {
   --bs-border-opacity: 1;
 }
 
+.w-100-px {
+  width: 100px !important;
+}
+
 .w-25 {
   width: 25% !important;
 }

@@ -5,7 +5,7 @@
 	$host = 'localhost';
 	$user = 'root';
 	$pass = '';
-	$database = 'spk_bimbel_topsis';
+	$database = 'tiket_masuk';
 
 	$conn = mysqli_connect($host, $user, $pass, $database);
 
@@ -18,4 +18,3 @@
 		$dataUser = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM user WHERE id_user = $id_user"));
 	}
 ?>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.1/dist/sweetalert2.all.min.js"></script>

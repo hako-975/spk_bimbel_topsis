@@ -1,7 +1,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="title" content="Sistem Pendukung Keputusan Tempat Bimbel">
-<meta name="author" content="Dewi Putri Aulia">
+<meta name="author" content="Hako Lab">
 <meta name="description" content="Sistem Pendukung Keputusan Tempat Bimbel">
 <meta name="keywords" content="Sistem Pendukung Keputusan Tempat Bimbel">
 
@@ -18,7 +18,9 @@
 <link rel="stylesheet" href="assets/vendor/select2/css/select2-bootstrap4.min.css">
 
 
-<link rel="icon" href="assets/img/properties/logo.jpg">
+<link rel="icon" href="assets/img/properties/logo.png">
 <link rel="stylesheet" href="css/overlayscrollbars.min.css">
 <link rel="stylesheet" href="css/adminlte.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.1/dist/sweetalert2.all.min.js"></script>
+
 

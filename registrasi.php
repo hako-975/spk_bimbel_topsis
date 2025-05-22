@@ -1,7 +1,7 @@
 <?php 
     require_once 'connection.php';
 
-    if (isset($_SESSION['id_user'])) {
+    if (isset($_SESSION['id_pengguna_tiket'])) {
         echo "
             <script>
                 window.location='index.php'
@@ -9,6 +9,10 @@
         ";
         exit;
     }
+
+    // Include the library
+    include 'phpqrcode/qrlib.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -23,82 +27,56 @@
 
     <?php 
         if (isset($_POST['btnRegistrasi'])) {
-            $username = htmlspecialchars($_POST['username']);
-            $nama = htmlspecialchars($_POST['nama']);
-            $password = $_POST['password'];
-            $ulangi_password = $_POST['ulangi_password'];
+            $nik = htmlspecialchars($_POST['nik']);
+            $nama_lengkap = htmlspecialchars($_POST['nama_lengkap']);
+            $posisi = htmlspecialchars($_POST['posisi']);
+            $divisi = htmlspecialchars($_POST['divisi']);
             
-            // check username
-            $check_username = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
-            if (mysqli_num_rows($check_username) > 0) {
-                echo "
-                    <script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Registrasi Gagal!',
-                            text: 'Username sudah digunakan!',
-                            confirmButtonText: 'Kembali'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.history.back();
-                            }
-                        });
-                    </script>
-                ";
+            // check nik
+            $check_nik = mysqli_query($conn, "SELECT * FROM pengguna_tiket WHERE nik = '$nik'");
+            if (mysqli_num_rows($check_nik) > 0) {
+                $data = mysqli_fetch_assoc($check_nik);
+                $_SESSION['id_pengguna_tiket'] = $data['id_pengguna_tiket'];                
+                header("Location: index.php");
                 exit;
             }
 
-            // check ulangi password
-            if ($password != $ulangi_password) {
-                echo "
-                    <script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Registrasi Gagal!',
-                            text: 'Password tidak sama dengan ulangi password!',
-                            confirmButtonText: 'Kembali'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.history.back();
-                            }
-                        });
-                    </script>
-                ";
-                exit;
+            $qr_generator = hash('sha256', $nik . time());
+            // Buat folder qr jika belum ada
+            if (!file_exists('qr')) {
+                mkdir('qr');
             }
 
-            $password_baru = password_hash($password, PASSWORD_DEFAULT);
+            // Simpan QR
+            $qrFile = "qr/$nik.png";
+            QRcode::png($qr_generator, $qrFile, QR_ECLEVEL_L, 4);
 
 
-            $insert_user = mysqli_query($conn, "INSERT INTO user VALUES ('', '$username', '$password_baru', 'orangtua', '$nama', 'default.jpg', CURRENT_TIMESTAMP())");
-            
-            $id_user = mysqli_insert_id($conn);
-
-            if ($insert_user) {
-                $log_berhasil = mysqli_query($conn, "INSERT INTO log VALUES ('', 'User $username berhasil ditambahkan!', CURRENT_TIMESTAMP(), " . $id_user . ")");
-
+            $insert_pengguna_tiket = mysqli_query($conn, "INSERT INTO pengguna_tiket VALUES ('', '$nik', '$nama_lengkap', '$posisi', '$divisi', '$qrFile', '$qr_generator', CURRENT_TIMESTAMP())");
+            $id_pengguna_tiket = mysqli_insert_id($conn);
+            if ($insert_pengguna_tiket) {
+                $_SESSION['id_pengguna_tiket'] = $id_pengguna_tiket;
                 echo "
                     <script>
                         Swal.fire({
                             icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'User " . $username . " berhasil ditambahkan!'
+                            title: 'Successfully!',
+                            text: 'NIK $nik successfully registered!'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.href = 'login.php';
+                                window.location.href = 'index.php';
                             }
                         });
                     </script>
                 ";
                 exit;
             } else {
-                $log_gagal = mysqli_query($conn, "INSERT INTO log VALUES ('', 'User $username gagal ditambahkan!', CURRENT_TIMESTAMP(), " . 1 . ")");
                 echo "
                     <script>
                         Swal.fire({
                             icon: 'error',
-                            title: 'Gagal!',
-                            text: 'User " . $username . " gagal ditambahkan!'
+                            title: 'Failed!',
+                            text: 'NIK $nik failed to register!'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 window.history.back();
@@ -112,50 +90,56 @@
     ?>
 
     <div class="login-box">
-        <div class="card card-outline card-primary">
+        <div class="card card-outline card-danger">
             <div class="card-header">
                 <div class="text-center">
-                    <img src="assets/img/properties/logo.jpg" class="mx-auto w-50" alt="Logo">
+                    <img src="assets/img/properties/logo.png" class="mx-auto w-50" alt="Logo">
                 </div>
-                <h4 class="text-center">Sistem Pendukung Keputusan Tempat Bimbel</h4>
             </div>
             <div class="card-body login-card-body pb-0 pt-2">
-                <h4 class="text-dark text-center">User Registrasi</h4>
+                <h4 class="text-dark text-center">Registration</h4>
                 <form method="post">
                     <div class="input-group mb-1">
                         <div class="form-floating"> 
-                            <input id="username" name="username" autocomplete="off" type="text" class="form-control" value="" placeholder="" required> 
-                            <label for="username">Username</label> 
+                            <input id="nik" name="nik" type="text" class="form-control" value="" placeholder="" required> 
+                            <label for="nik">NIK</label> 
                         </div>
-                        <div class="input-group-text"> <span class="fas fa-fw fa-user"></span> </div>
+                        <div class="input-group-text"> <span class="fas fa-fw fa-id-card"></span> </div>
                     </div>
+
                     <div class="input-group mb-1">
                         <div class="form-floating"> 
-                            <input id="nama" name="nama" autocomplete="off" type="text" class="form-control" value="" placeholder="" required> 
-                            <label for="nama">Nama Lengkap</label> 
+                            <input id="nama_lengkap" name="nama_lengkap" type="text" class="form-control" value="" placeholder="" required> 
+                            <label for="nama_lengkap">Full Name</label> 
                         </div>
                         <div class="input-group-text"> <span class="fas fa-fw fa-user"></span> </div>
                     </div>
+
                     <div class="input-group mb-1">
-                        <div class="form-floating"> <input id="password" name="password" type="password" class="form-control" placeholder="" required> <label for="password">Password</label> </div>
-                        <div class="input-group-text"> <span class="fas fa-fw fa-lock"></span> </div>
+                        <div class="form-floating"> 
+                            <input id="posisi" name="posisi" type="text" class="form-control" value="" placeholder="" required> 
+                            <label for="posisi">Position</label> 
+                        </div>
+                        <div class="input-group-text"> <span class="fas fa-fw fa-briefcase"></span> </div>
                     </div>
+
                     <div class="input-group mb-1">
-                        <div class="form-floating"> <input id="ulangi_password" name="ulangi_password" type="password" class="form-control" placeholder="" required> <label for="ulangi_password">Ulangi Password</label> </div>
-                        <div class="input-group-text"> <span class="fas fa-fw fa-lock"></span> </div>
-                    </div> <!--begin::Row-->
+                        <div class="form-floating"> 
+                            <input id="divisi" name="divisi" type="text" class="form-control" value="" placeholder="" required> 
+                            <label for="divisi">Division</label> 
+                        </div>
+                        <div class="input-group-text"> <span class="fas fa-fw fa-user-tie"></span> </div>
+                    </div>
+
                     <div class="row mt-3">
-                        <div class="col text-start my-auto">
-                            <a href="login.php">Login</a>
-                        </div> <!-- /.col -->
                         <div class="col text-end">
-                            <button type="submit" name="btnRegistrasi" class="btn btn-primary">Registrasi <span class="fas fa-fw fa-sign-in-alt"></span></button>
+                            <button type="submit" name="btnRegistrasi" class="btn btn-danger">Submit <span class="fas fa-fw fa-sign-in-alt"></span></button>
                         </div> <!-- /.col -->
                     </div> <!--end::Row-->
                 </form>
             </div> 
             <div class="card-footer">
-                <p class="m-0 p-0">Copyright &copy; 2025 Dewi Putri Aulia.</p>
+                <p class="m-0 p-0">Copyright &copy; 2025 Hako Lab.</p>
             </div>
         </div>
     </div> <!-- /.login-box --> <!--begin::Third Party Plugin(OverlayScrollbars)-->

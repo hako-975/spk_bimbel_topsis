@@ -6,9 +6,9 @@
 </style>
 
 <aside class="app-sidebar bg-white shadow" data-bs-theme="dark">
-    <div class="sidebar-brand border-primary border-bottom"> 
+    <div class="sidebar-brand border-danger border-bottom"> 
         <a href="index.php" class="brand-link"> 
-            <img src="assets/img/properties/logo.jpg" alt="Logo" class="brand-image-xl">
+            <img src="assets/img/properties/logo.png" alt="Logo" class="brand-image-xl">
             <span class="brand-text fw-light text-dark small text-wrap">Sistem Pendukung Keputusan Tempat Bimbel</span>
         </a> 
     </div>
