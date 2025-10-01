@@ -2,7 +2,7 @@
     require_once 'connection.php';
 
     if (!isset($_SESSION['id_user'])) {
-        header("Location: login.php");
+        header("Location: landing.php");
         exit;
     }
 

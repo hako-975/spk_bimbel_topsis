@@ -20,7 +20,18 @@
 </head> <!--end::Head--> <!--begin::Body-->
 
 <body class="login-page bg-body-secondary" style="background-image: url('assets/img/properties/background.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; backdrop-filter: brightness(70%);">
-
+    <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white bg-white navbar-light fixed-top">
+    <div class="container">
+      <a href="landing.php" class="navbar-brand">
+        <span class="brand-text fw-bold">Sistem Pendukung Keputusan Tempat Bimbel</span>
+      </a>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a href="login.php" class="nav-link">Login</a></li>
+        <li class="nav-item"><a href="registrasi.php" class="nav-link">Registrasi</a></li>
+      </ul>
+    </div>
+  </nav>
     <?php 
         if (isset($_POST['btnRegistrasi'])) {
             $username = htmlspecialchars($_POST['username']);
@@ -75,14 +86,14 @@
             $id_user = mysqli_insert_id($conn);
 
             if ($insert_user) {
-                $log_berhasil = mysqli_query($conn, "INSERT INTO log VALUES ('', 'User $username berhasil ditambahkan!', CURRENT_TIMESTAMP(), " . $id_user . ")");
+                $log_berhasil = mysqli_query($conn, "INSERT INTO log VALUES ('', 'Registrasi User $username berhasil!', CURRENT_TIMESTAMP(), " . $id_user . ")");
 
                 echo "
                     <script>
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
-                            text: 'User " . $username . " berhasil ditambahkan!'
+                            text: 'Registrasi User " . $username . " berhasil!'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 window.location.href = 'login.php';
@@ -92,13 +103,13 @@
                 ";
                 exit;
             } else {
-                $log_gagal = mysqli_query($conn, "INSERT INTO log VALUES ('', 'User $username gagal ditambahkan!', CURRENT_TIMESTAMP(), " . 1 . ")");
+                $log_gagal = mysqli_query($conn, "INSERT INTO log VALUES ('', 'Registrasi User $username gagal!', CURRENT_TIMESTAMP(), " . 1 . ")");
                 echo "
                     <script>
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: 'User " . $username . " gagal ditambahkan!'
+                            text: 'Registrasi User " . $username . " gagal!'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 window.history.back();
@@ -111,7 +122,7 @@
         }
     ?>
 
-    <div class="login-box">
+    <div class="login-box py-5 mt-5">
         <div class="card card-outline card-primary">
             <div class="card-header">
                 <div class="text-center">

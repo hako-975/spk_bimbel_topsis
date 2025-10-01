@@ -52,6 +52,7 @@
                                         <tr>
                                             <th class="text-center align-middle">No.</th>
                                             <th class="text-center align-middle">Nama Bimbel</th>
+                                            <th class="text-center align-middle">Alamat Bimbel</th>
                                             <th class="text-center align-middle">Dibuat Pada</th>
                                             <?php if ($dataUser['jabatan'] == 'admin'): ?>
                                                 <th class="text-center align-middle">Aksi</th>
@@ -64,6 +65,7 @@
                                             <tr>
                                                 <td class="text-center align-middle"><?= $i++; ?>.</td>
                                                 <td class="align-middle text-start"><?= $dj['nama_bimbel']; ?></td>
+                                                <td class="align-middle text-start"><a href="<?= $dj['alamat_bimbel']; ?>" target="_blank"><?= $dj['alamat_bimbel']; ?></a></td>
                                                 <td class="align-middle text-start"><?= date("d-m-Y, H:i", strtotime($dj['dibuat_pada'])); ?></td>
                                                 <?php if ($dataUser['jabatan'] == 'admin'): ?>
                                                     <td class="text-center align-middle">

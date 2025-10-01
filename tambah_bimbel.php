@@ -93,8 +93,8 @@
                                             <input type="text" class="form-control" id="nama_bimbel" name="nama_bimbel" required>
                                         </div>
                                         <div class="mb-3"> 
-                                            <label for="alamat_bimbel" class="form-label">Alamat Bimbel</label>
-                                            <textarea class="form-control" id="alamat_bimbel" name="alamat_bimbel" required></textarea>
+                                            <label for="alamat_bimbel" class="form-label">Alamat Link Google Maps Bimbel</label>
+                                            <textarea class="form-control" id="alamat_bimbel" name="alamat_bimbel" required placeholder="https://maps.app.goo.gl/EVBUqmTGe2WNNYMN7"></textarea>
                                         </div>
                                     </div> 
                                     <div class="card-footer pt-3 text-end">

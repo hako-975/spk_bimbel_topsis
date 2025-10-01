@@ -1,18 +1,84 @@
 <?php 
 require_once 'connection.php';
 
-if (!isset($_SESSION['id_user'])) {
-    header("Location: login.php");
+$id_hasil = $_GET['id_hasil'];
+$data_hasil = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN user ON orangtua.id_user = user.id_user WHERE hasil_topsis.id_hasil = '$id_hasil'"));
+
+if ($data_hasil == null) {
+    header("Location: spk.php");
     exit;
 }
 
-$hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN user ON orangtua.id_user = user.id_user INNER JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel ORDER BY dibuat desc");
+$kriteria = mysqli_query($conn, "SELECT * FROM kriteria ORDER BY nama_kriteria ASC");
+$penilaian = mysqli_query($conn, "SELECT * FROM penilaian INNER JOIN kriteria ON penilaian.id_kriteria = kriteria.id_kriteria INNER JOIN bimbel ON penilaian.id_bimbel = bimbel.id_bimbel WHERE penilaian.id_hasil = '$id_hasil' GROUP BY penilaian.id_bimbel ORDER BY bimbel.nama_bimbel ASC");
 
-if (isset($_GET)) {
-    if (isset($_GET['dari_tanggal'])) {
-        $dari_tanggal = $_GET['dari_tanggal'];
-        $sampai_tanggal = $_GET['sampai_tanggal'];
-        $hasil = mysqli_query($conn, "SELECT *, hasil_topsis.dibuat_pada as dibuat FROM hasil_topsis INNER JOIN orangtua ON hasil_topsis.id_orangtua = orangtua.id_orangtua INNER JOIN user ON orangtua.id_user = user.id_user INNER JOIN bimbel ON hasil_topsis.id_bimbel = bimbel.id_bimbel WHERE hasil_topsis.dibuat_pada BETWEEN '$dari_tanggal' AND '$sampai_tanggal' ORDER BY hasil_topsis.dibuat_pada desc");
+// ------------------- NORMALISASI MATRIKS KEPUTUSAN (R) --------------------------------------------
+// Inisialisasi variabel
+$normalisasi = [];
+$kolom_total = [];
+
+// Step 1: Hitung total kuadrat per kriteria
+foreach ($kriteria as $dk) {
+    $id_kriteria_dk = $dk['id_kriteria'];
+    $total_kuadrat = 0;
+
+    foreach ($penilaian as $dp) {
+        $id_bimbel_dp = $dp['id_bimbel'];
+        $nilai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT nilai FROM penilaian WHERE id_kriteria = '$id_kriteria_dk' AND id_bimbel = '$id_bimbel_dp' AND id_hasil = '$id_hasil'"));
+        $total_kuadrat += pow($nilai['nilai'], 2); // Hitung kuadrat nilai
+    }
+
+    $kolom_total[$id_kriteria_dk] = sqrt($total_kuadrat); // Simpan akar total kuadrat
+}
+
+// Step 2: Hitung normalisasi
+foreach ($penilaian as $dp) {
+    $id_bimbel_dp = $dp['id_bimbel'];
+    $row_normalisasi = ['id_bimbel' => $dp['id_bimbel'], 'nama_bimbel' => $dp['nama_bimbel']];
+
+    foreach ($kriteria as $dk) {
+        $id_kriteria_dk = $dk['id_kriteria'];
+        $nilai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT nilai FROM penilaian WHERE id_kriteria = '$id_kriteria_dk' AND id_bimbel = '$id_bimbel_dp' AND id_hasil = '$id_hasil'"));
+        $nilai_normalisasi = $nilai['nilai'] / $kolom_total[$id_kriteria_dk]; // Hitung normalisasi
+        $row_normalisasi[$id_kriteria_dk] = $nilai_normalisasi;
+    }
+
+    $normalisasi[] = $row_normalisasi;
+}
+
+// ------------------- Solusi Ideal Positif dan Negatif --------------------------------------------
+// Inisialisasi Solusi Ideal
+$solusi_ideal_positif = [];
+$solusi_ideal_negatif = [];
+
+// Matriks Ternilai
+$matriks_ternilai = [];
+
+// Step 1: Hitung Matriks Ternilai (V)
+foreach ($normalisasi as $row) {
+    $row_ternilai = [];
+    foreach ($kriteria as $dk) {
+        $id_kriteria = $dk['id_kriteria'];
+        $row_ternilai[$id_kriteria] = $row[$id_kriteria] * $dk['bobot']; // V_ij = r_ij * w_j
+    }
+    $matriks_ternilai[] = $row_ternilai;
+}
+
+// Step 2: Hitung Solusi Ideal Positif dan Negatif
+foreach ($kriteria as $dk) {
+    $id_kriteria = $dk['id_kriteria'];
+    $tipe = $dk['atribut']; // 'benefit' atau 'cost'
+    
+    // $solusi_ideal_positif['tipe'] = $tipe;
+    // $solusi_ideal_negatif['tipe'] = $tipe;
+
+    $values = array_column($matriks_ternilai, $id_kriteria);
+    if ($tipe == 'Benefit') {
+        $solusi_ideal_positif[$id_kriteria] = max($values);
+        $solusi_ideal_negatif[$id_kriteria] = min($values);
+    } else { // cost
+        $solusi_ideal_positif[$id_kriteria] = min($values);
+        $solusi_ideal_negatif[$id_kriteria] = max($values);
     }
 }
 
@@ -21,6 +87,7 @@ if (isset($_GET)) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css">
     <title>Print Laporan</title>
     <style>
         body {
@@ -62,35 +129,464 @@ if (isset($_GET)) {
 ?>
     <div class="print-container">
         <h2 class="text-center">Laporan Hasil SPK Tempat Bimbel</h2>
-        <?php if (isset($_GET['dari_tanggal'])) : ?>
-            <p class="text-right">Dari Tanggal: <?= date('d-m-Y', strtotime($dari_tanggal)); ?> Sampai Tanggal: <?= date('d-m-Y', strtotime($sampai_tanggal)); ?></p>
-        <?php endif ?>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Nama Orang Tua</th>
-                    <th>Bimbel</th>
-                    <th>Preferensi Tertinggi</th>
-                    <th>Dibuat Pada</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $i = 1; ?>
-                <?php foreach ($hasil as $dh): ?>
-                    <tr>
-                        <td class="text-center align-middle"><?= $i++; ?>.</td>
-                        <td class="align-middle text-start"><?= $dh['nama']; ?></td>
-                        <td class="align-middle text-start"><?= $dh['nama_bimbel']; ?></td>
-                        <td class="align-middle text-start"><?= $dh['preferensi_tertinggi']; ?></td>
-                        <td class="align-middle text-start"><?= date('d-m-Y, H:i \W\I\B', strtotime($dh['dibuat'])); ?></td>
-                    </tr>
-                <?php endforeach ?>
-            </tbody>
-        </table>
+        <div class="container-fluid"> <!-- Info boxes -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">Data Awal</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Alternatif</th>
+                                            <?php $i = 1; ?>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <th><?= $dk['nama_kriteria']; ?> (C<?= $i++; ?> - <?= $dk['atribut']; ?>)</th>
+                                            <?php endforeach ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($penilaian as $dp): ?>
+                                            <tr>
+                                                <td><?= $dp['nama_bimbel']; ?></td>
+                                                <?php foreach ($kriteria as $dk): ?>
+                                                    <?php 
+                                                        $id_kriteria_dk = $dk['id_kriteria'];
+                                                        $id_bimbel_dp = $dp['id_bimbel'];
+                                                        $nilai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT nilai FROM penilaian WHERE id_kriteria = '$id_kriteria_dk' AND id_bimbel = '$id_bimbel_dp' AND id_hasil = '$id_hasil'"));
+                                                    ?>
+                                                    <td><?= number_format($nilai['nilai'], 0, ',', '.'); ?></td>
+                                                <?php endforeach ?>
+                                            </tr>
+                                        <?php endforeach ?>
+                                    </tbody> 
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">Bobot Kriteria (<span class="formula">w</span>)</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <?php $i = 1; ?>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <th><?= $dk['nama_kriteria']; ?> (C<?= $i++; ?> - <?= $dk['atribut']; ?>)</th>
+                                            <?php endforeach ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <td><?= $dk['bobot']; ?></td>
+                                            <?php endforeach ?>
+                                        </tr>
+                                    </tbody> 
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">Hasil Matriks Normalisasi (<span class="formula">R</span>)</h4>
+                        </div>
+                        <div class="card-body">
+                            <h5>Rumus:</h5>
+                            <h4 class="formula">
+                                r_{ij} = \frac{x_{ij}}{\sqrt{\sum_{i=1}^m x_{ij}^2}}
+                            </h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Alternatif</th>
+                                            <?php $i = 1; ?>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <th><?= $dk['nama_kriteria']; ?> (C<?= $i++; ?> - <?= $dk['atribut']; ?>)</th>
+                                            <?php endforeach ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($normalisasi as $row): ?>
+                                            <tr>
+                                                <td><?= $row['nama_bimbel']; ?></td>
+                                                <?php foreach ($kriteria as $dk): ?>
+                                                    <td><?= number_format($row[$dk['id_kriteria']], 5); ?></td>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody> 
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">Hasil Matriks Normalisasi Ternilai (<span class="formula">V</span>)</h4>
+                        </div>
+                        <div class="card-body">
+                            <h5>Rumus:</h5>
+                             <h4 class="formula">
+                                v_{ij} = r_{ij} \cdot w_j
+                            </h4>   
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Alternatif</th>
+                                            <?php $i = 1; ?>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <th><?= $dk['nama_kriteria']; ?> (C<?= $i++; ?> - <?= $dk['atribut']; ?>)</th>
+                                            <?php endforeach ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($normalisasi as $row): ?>
+                                            <tr>
+                                                <td><?= $row['nama_bimbel']; ?></td>
+                                                <!-- Matriks Normalisasi Ternilai (V) -->
+                                                <?php foreach ($kriteria as $dk): ?>
+                                                    <td><?= number_format($row[$dk['id_kriteria']] * $dk['bobot'], 5); ?></td>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody> 
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">Solusi Ideal Positif (<span class="formula">A^+</span>) dan Negatif (<span class="formula">A^-</span>)</h4>
+                        </div>
+                        <div class="card-body">
+                            <h5>Rumus:</h5>
+                             <h5 class="formula">
+                                A^+ = \{\max(v_{ij}) \text{ untuk benefit, } \min(v_{ij}) \text{ untuk cost}\}
+                            </h5>
+                            <h5 class="formula">
+                                A^- = \{\min(v_{ij}) \text{ untuk benefit, } \max(v_{ij}) \text{ untuk cost}\}
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Solusi Ideal</th>
+                                            <?php $i = 1; ?>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <th><?= $dk['nama_kriteria']; ?> (C<?= $i++; ?> - <?= ucfirst($dk['atribut']); ?>)</th>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Solusi Ideal Positif -->
+                                        <tr>
+                                            <td><span class="formula">A^+</span></td>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <?php
+                                                    $id_kriteria = $dk['id_kriteria'];
+                                                    $tipe = $dk['atribut'];
+                                                    $value = $solusi_ideal_positif[$id_kriteria];
+                                                    $min_max = $tipe == 'Benefit' ? 'Max' : 'Min';
+                                                ?>
+                                                <td>
+                                                    <?= number_format($value, 5); ?>
+                                                    <small>(<?= $min_max; ?>)</small>
+                                                </td>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                        
+                                        <!-- Solusi Ideal Negatif -->
+                                        <tr>
+                                            <td><span class="formula">A^-</span></td>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <?php
+                                                    $id_kriteria = $dk['id_kriteria'];
+                                                    $tipe = $dk['atribut'];
+                                                    $value = $solusi_ideal_negatif[$id_kriteria];
+                                                    $min_max = $tipe == 'Benefit' ? 'Min' : 'Max';
+                                                ?>
+                                                <td>
+                                                    <?= number_format($value, 5); ?>
+                                                    <small>(<?= $min_max; ?>)</small>
+                                                </td>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">Jarak Matriks Normalisasi Ternilai ke Solusi Ideal <span class="formula">(D_i^+)</span> dan <span class="formula">(D_i^-)</span></h4>
+                        </div>
+                        <div class="card-body">
+                            <h5>Rumus:</h5>
+                            <h5 class="formula">
+                                D_i^+ = \sqrt{\sum_{j=1}^n (v_{ij} - A_j^+)^2}
+                            </h5>
+                            <h5 class="formula">
+                                D_i^- = \sqrt{\sum_{j=1}^n (v_{ij} - A_j^-)^2}
+                            </h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Alternatif</th>
+                                            <th><span class="formula">D^+</span></th>
+                                            <th><span class="formula">D^-</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($normalisasi as $row): ?>
+                                            <tr>
+                                                <td><?= $row['nama_bimbel']; ?></td>
+                                                <!-- D+ -->
+                                                <td>
+                                                    <?php $hasil_jarak_solusi = 0; ?>
+                                                    <?php foreach ($kriteria as $dk): ?>
+                                                        <?php 
+                                                            $id_kriteria = $dk['id_kriteria']; 
+                                                            $normalisasi_ternilai = number_format($row[$id_kriteria] * $dk['bobot'], 5);
+                                                            $ideal_positif = number_format($solusi_ideal_positif[$id_kriteria], 5);
+                                                            $diff = ($normalisasi_ternilai - $ideal_positif);
+                                                            $diff_pow = pow($diff, 2);
+                                                            $hasil_jarak_solusi += $diff_pow;
+                                                        ?>
+                                                    <?php endforeach; ?>
+                                                    <?= number_format(sqrt($hasil_jarak_solusi), 5); ?>
+                                                </td>
+                                                <!-- D- -->
+                                                <td>
+                                                    <?php $hasil_jarak_solusi = 0; ?>
+                                                    <?php foreach ($kriteria as $dk): ?>
+                                                        <?php 
+                                                            $id_kriteria = $dk['id_kriteria']; 
+                                                            $normalisasi_ternilai = number_format($row[$id_kriteria] * $dk['bobot'], 5);
+                                                            $ideal_negatif = number_format($solusi_ideal_negatif[$id_kriteria], 5);
+                                                            $diff = ($normalisasi_ternilai - $ideal_negatif);
+                                                            $diff_pow = pow($diff, 2);
+                                                            $hasil_jarak_solusi += $diff_pow;
+                                                        ?>
+                                                    <?php endforeach; ?>
+                                                    <?= number_format(sqrt($hasil_jarak_solusi), 5); ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">Nilai Preferensi <span class="formula">(C_i)</span></h4>
+                        </div>
+                        <div class="card-body">
+                            <h5>Rumus:</h5>
+                            <h4 class="formula">
+                                C_i = \frac{D_i^-}{D_i^+ + D_i^-}
+                            </h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Alternatif</th>
+                                            <th>Nilai</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($normalisasi as $row): ?>
+                                            <tr>
+                                                <td><?= $row['nama_bimbel']; ?></td>
+                                                <td>
+                                                    <?php 
+                                                        $hasil_jarak_solusi_positif = 0; 
+                                                        $hasil_jarak_solusi_negatif = 0; 
+                                                    ?>
+                                                    <?php foreach ($kriteria as $dk): ?>
+                                                        <?php 
+                                                            $id_kriteria = $dk['id_kriteria']; 
+                                                            $normalisasi_ternilai = number_format($row[$id_kriteria] * $dk['bobot'], 5);
+
+                                                            $ideal_positif = number_format($solusi_ideal_positif[$id_kriteria], 5);
+                                                            $diff_positif = ($normalisasi_ternilai - $ideal_positif);
+                                                            $diff_positif_pow = pow($diff_positif, 2);
+                                                            $hasil_jarak_solusi_positif += $diff_positif_pow;
+
+                                                            $ideal_negatif = number_format($solusi_ideal_negatif[$id_kriteria], 5);
+                                                            $diff_negatif = ($normalisasi_ternilai - $ideal_negatif);
+                                                            $diff_negatif_pow = pow($diff_negatif, 2);
+                                                            $hasil_jarak_solusi_negatif += $diff_negatif_pow;
+                                                        ?>
+                                                    <?php endforeach; ?>
+                                                    <?php 
+                                                        $d_positif = number_format(sqrt($hasil_jarak_solusi_positif), 5); 
+                                                        $d_negatif = number_format(sqrt($hasil_jarak_solusi_negatif), 5); 
+
+                                                        $c = $d_negatif / ($d_positif + $d_negatif);
+                                                    ?>
+                                                    <?= number_format($c, 5); ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary card-outline mb-4">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">Nilai Preferensi Tertinggi <span class="formula">(C)</span></h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Alternatif</th>
+                                            <th>Nilai</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php 
+                                            $urutan_tertinggi = []; // Array untuk menyimpan nilai tertinggi
+                                        ?>
+                                        <?php foreach ($normalisasi as $row): ?>
+                                            <?php 
+                                                $hasil_jarak_solusi_positif = 0; 
+                                                $hasil_jarak_solusi_negatif = 0; 
+                                            ?>
+                                            <?php foreach ($kriteria as $dk): ?>
+                                                <?php 
+                                                    $id_kriteria = $dk['id_kriteria']; 
+                                                    $normalisasi_ternilai = number_format($row[$id_kriteria] * $dk['bobot'], 5);
+
+                                                    $ideal_positif = number_format($solusi_ideal_positif[$id_kriteria], 5);
+                                                    $diff_positif = ($normalisasi_ternilai - $ideal_positif);
+                                                    $diff_positif_pow = pow($diff_positif, 2);
+                                                    $hasil_jarak_solusi_positif += $diff_positif_pow;
+
+                                                    $ideal_negatif = number_format($solusi_ideal_negatif[$id_kriteria], 5);
+                                                    $diff_negatif = ($normalisasi_ternilai - $ideal_negatif);
+                                                    $diff_negatif_pow = pow($diff_negatif, 2);
+                                                    $hasil_jarak_solusi_negatif += $diff_negatif_pow;
+                                                ?>
+                                            <?php endforeach; ?>
+                                            <?php 
+                                                $d_positif = number_format(sqrt($hasil_jarak_solusi_positif), 5); 
+                                                $d_negatif = number_format(sqrt($hasil_jarak_solusi_negatif), 5); 
+
+                                                $c = $d_negatif / ($d_positif + $d_negatif);
+
+                                                // Menyimpan hasil ke array $urutan_tertinggi
+                                                $urutan_tertinggi[] = [
+                                                    'id_bimbel' => $row['id_bimbel'],
+                                                    'nama_bimbel' => $row['nama_bimbel'],
+                                                    'preferensi' => $c
+                                                ];
+                                            ?>
+                                        <?php endforeach; ?>
+
+                                        <?php 
+                                            // Mengurutkan array $urutan_tertinggi berdasarkan preferensi tertinggi
+                                            usort($urutan_tertinggi, function($a, $b) {
+                                                return $b['preferensi'] <=> $a['preferensi'];
+                                            });
+
+                                            // Mengambil 3 data tertinggi
+                                            // $urutan_tertinggi = array_slice($urutan_tertinggi, 0, 3);
+                                        ?>
+
+                                        <?php 
+                                            $i = 1;
+                                            $highest = 0; 
+                                            $id_bimbel = 0;
+                                        ?>
+                                        <?php foreach ($urutan_tertinggi as $result): ?>
+                                            <?php 
+                                                if ($result['preferensi'] > $highest) {
+                                                    $highest = $result['preferensi'];
+                                                    $id_bimbel = $result['id_bimbel'];
+                                                }
+                                            ?>
+                                            <tr>
+                                                <td><?= $i++; ?>.</td>
+                                                <td><?= $result['nama_bimbel']; ?></td>
+                                                <td><?= number_format($result['preferensi'], 5); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+
+                                        <?php 
+                                            mysqli_query($conn, "UPDATE hasil_topsis SET id_bimbel = '$id_bimbel', preferensi_tertinggi = '$highest' WHERE id_hasil = '$id_hasil'");
+                                         ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!--end::Container-->
     </div>
     <script>
         window.print()
+    </script>
+    <?php include_once 'include/script.php'; ?>
+    <script src="js/katex.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Render LaTeX inside elements with id "formula"
+            $('.formula').each(function() {
+                var formula = $(this).html(); // Get the LaTeX string
+                // Render the LaTeX string using KaTeX
+                katex.render(formula, this);
+            });
+        });
     </script>
 </body>
 </html>

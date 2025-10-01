@@ -20,7 +20,18 @@
 </head> <!--end::Head--> <!--begin::Body-->
 
 <body class="login-page bg-body-secondary" style="background-image: url('assets/img/properties/background.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; backdrop-filter: brightness(70%);">
-
+    <!-- Navbar -->
+      <nav class="main-header navbar navbar-expand navbar-white bg-white navbar-light fixed-top">
+        <div class="container">
+          <a href="landing.php" class="navbar-brand">
+            <span class="brand-text fw-bold">Sistem Pendukung Keputusan Tempat Bimbel</span>
+          </a>
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a href="login.php" class="nav-link">Login</a></li>
+            <li class="nav-item"><a href="registrasi.php" class="nav-link">Registrasi</a></li>
+          </ul>
+        </div>
+      </nav>
     <?php 
         if (isset($_POST['btnLogin'])) {
             $username = $_POST['username'];
