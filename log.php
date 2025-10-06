@@ -57,6 +57,9 @@
                                             <th class="text-center align-middle">Isi Log</th>
                                             <th class="text-center align-middle">Tanggal Log</th>
                                             <th class="text-center align-middle">Username</th>
+                                            <?php if ($dataUser['jabatan'] == 'admin'): ?>
+                                                <th class="text-center align-middle">Aksi</th>
+                                            <?php endif; ?>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -67,6 +70,15 @@
                                                 <td class="align-middle"><?= $dl['isi_log']; ?></td>
                                                 <td class="align-middle"><?= date('d-m-Y, H:i:s', strtotime($dl['tgl_log']));; ?></td>
                                                 <td class="align-middle"><?= ($dl['username']) ? $dl['username'] : 'User sudah terhapus'; ?></td>
+                                                <?php if ($dataUser['jabatan'] == 'admin'): ?>
+                                                    <td class="text-center align-middle">
+                                                        <a href="hapus_log.php?id=<?= $dl['id_log']; ?>" 
+                                                           class="btn btn-danger btn-sm btn-delete" 
+                                                           data-nama="Log <?= $dl['isi_log']; ?>">
+                                                            <i class="fas fa-trash"></i> Hapus
+                                                        </a>
+                                                    </td>
+                                                <?php endif; ?>
                                             </tr>
                                         <?php endforeach ?>
                                     </tbody>

@@ -70,17 +70,27 @@
       <div class="container">
         <h2 class="text-center mb-4">Lokasi & Informasi Bimbel</h2>
         <div class="row g-4">
+          <?php 
+            $alamat = [
+              'Jl. Buaran Timur, Jelupang, Kec. Serpong Utara, Kota Tangerang Selatan, Banten 15323', 
+              'Jl. Sarehpudin Lengkong Karya, Kec. Serpong Utara, Kota Tangerang Selatan, Banten 15310'
+            ];
+
+            $i = 0; 
+          ?>
           <?php foreach ($bimbel as $data_bimbel): ?>
             <div class="col-md-6">
               <div class="card card-outline card-primary h-100">
                 <div class="card-body">
                   <h5 class="fw-bold"><i class="fas fa-book-open text-primary"></i> <?= $data_bimbel['nama_bimbel']; ?></h5>
+                  <p><?= $alamat[$i]; ?></p>
                   <a href="<?= $data_bimbel['alamat_bimbel']; ?>" target="_blank" class="btn btn-primary btn-sm">
                     <i class="fas fa-map-marker-alt"></i> Alamat Lihat di Google Maps
                   </a>
                 </div>
               </div>
             </div>
+            <?php $i++; ?>
           <?php endforeach ?>
         </div>
       </div>
