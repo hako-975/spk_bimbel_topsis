@@ -21,4 +21,5 @@
 <link rel="icon" href="assets/img/properties/logo.jpg">
 <link rel="stylesheet" href="css/overlayscrollbars.min.css">
 <link rel="stylesheet" href="css/adminlte.css">
+<link rel="stylesheet" href="assets/style.css">
 

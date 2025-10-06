@@ -34,6 +34,13 @@
     <?php include_once 'include/head.php'; ?>
 </head> <!--end::Head--> <!--begin::Body-->
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary"> <!--begin::App Wrapper-->
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Memuat Dashboard...</div>
+        </div>
+    </div>
     <div class="app-wrapper"> <!--begin::Header-->
         <?php include_once 'include/navbar.php'; ?>
         <?php include_once 'include/sidebar.php'; ?>

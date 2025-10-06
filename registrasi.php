@@ -156,12 +156,15 @@
                         <div class="input-group-text"> <span class="fas fa-fw fa-lock"></span> </div>
                     </div> <!--begin::Row-->
                     <div class="row mt-3">
-                        <div class="col text-start my-auto">
-                            <a href="login.php">Login</a>
-                        </div> <!-- /.col -->
-                        <div class="col text-end">
-                            <button type="submit" name="btnRegistrasi" class="btn btn-primary">Registrasi <span class="fas fa-fw fa-sign-in-alt"></span></button>
-                        </div> <!-- /.col -->
+                        <div class="col-4 text-start">
+                            <a href="index.php" class="btn btn-outline-secondary w-100">Kembali</a>
+                        </div>
+                        <div class="col-4 text-center">
+                            <button type="submit" name="btnRegistrasi" class="btn btn-primary w-100">Registrasi <span class="fas fa-fw fa-sign-in-alt"></span></button>
+                        </div>
+                        <div class="col-4 text-end">
+                            <a href="login.php" class="btn btn-outline-primary w-100">Login</a>
+                        </div>
                     </div> <!--end::Row-->
                 </form>
             </div> 

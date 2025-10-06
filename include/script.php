@@ -97,3 +97,31 @@
     });
 
 </script>
+
+<script>
+// Loading Animation
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    setTimeout(function() {
+        loadingOverlay.classList.add('loading-hidden');
+        setTimeout(function() {
+            loadingOverlay.style.display = 'none';
+        }, 500);
+    }, 800);
+});
+document.addEventListener('submit', function(e) {
+    if (e.target.tagName === 'FORM') {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.classList.remove('loading-hidden');
+        loadingOverlay.style.display = 'flex';
+    }
+});
+document.addEventListener('click', function(e) {
+    if (e.target.tagName === 'A' && e.target.href && !e.target.href.includes('#')) {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.classList.remove('loading-hidden');
+        loadingOverlay.style.display = 'flex';
+    }
+});
+
+</script>

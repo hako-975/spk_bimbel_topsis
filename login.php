@@ -82,16 +82,16 @@
         }
     ?>
 
-    <div class="login-box">
+    <div class="login-box py-5 mt-5">
         <div class="card card-outline card-primary">
             <div class="card-header">
                 <div class="text-center">
                     <img src="assets/img/properties/logo.jpg" class="mx-auto w-50 my-2" alt="Logo">
                 </div>
-                <h5 class="text-center">Sistem Pendukung Keputusan <br> Tempat Bimbel</h5>
+                <h4 class="text-center">Sistem Pendukung Keputusan Tempat Bimbel</h4>
             </div>
             <div class="card-body login-card-body pb-0 pt-2">
-                <h5 class="text-dark text-center">User Login</h5>
+                <h4 class="text-dark text-center">User Login</h4>
                 <form method="post">
                     <div class="input-group mb-1">
                         <div class="form-floating"> 
@@ -105,12 +105,15 @@
                         <div class="input-group-text"> <span class="fas fa-fw fa-lock"></span> </div>
                     </div> <!--begin::Row-->
                     <div class="row mt-3">
-                        <div class="col text-start my-auto">
-                            <a href="registrasi.php">Registrasi</a>
+                        <div class="col-4 text-start">
+                            <a href="index.php" class="btn btn-outline-secondary w-100">Kembali</a>
                         </div>
-                        <div class="col text-end">
-                            <button type="submit" name="btnLogin" class="btn btn-primary">Login <span class="fas fa-fw fa-sign-in-alt"></span></button>
-                        </div> <!-- /.col -->
+                        <div class="col-4 text-center">
+                            <button type="submit" name="btnLogin" class="btn btn-primary w-100">Login <span class="fas fa-fw fa-sign-in-alt"></span></button>
+                        </div>
+                        <div class="col-4 text-end">
+                            <a href="registrasi.php" class="btn btn-outline-primary w-100">Registrasi</a>
+                        </div>
                     </div> <!--end::Row-->
                 </form>
             </div> 
